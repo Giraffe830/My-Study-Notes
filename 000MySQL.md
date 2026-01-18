@@ -1,4 +1,4 @@
-DAY01
+# DAY01
 *返回全列，或者指定列;
 --空格  注释
 select from where order by;
