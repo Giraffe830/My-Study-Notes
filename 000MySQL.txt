@@ -1,0 +1,62 @@
+DAY01
+*返回全列，或者指定列;
+--空格  注释
+select from where order by;
+列可以进行算术运算，as字段取别名;
+给表起别名
+无所谓大小写;
+distinct	可以去除重复项，比如select distinct district from poi(取poi旅游景点中的区级唯一列表);
+in	可以简短or运算，or左右是布尔值，in可以是字符串数字；
+between	可以简短<=、>=运算，between可以是数字365也可以是字符串'2025-06-21'；
+like%	可以模糊运算，like"上海%"开头是上海;   "%上海"结尾是上海;"   上海_"只有三个字符且开始两个字是上海;一个_代表一个字符
+regexp	可以复杂搜索，正则表达式regular rxpression的缩写。'^上海'：必须以上海打头；'上海'等同于'%上海%';'上海$'必须以上海结尾
+	'徐汇|黄埔|奉贤'表示包括徐汇或者黄埔或者奉贤  ‘第[一二三]’匹配括号内的字符，第一或者第二或者第三
+desc	降序,order by longitude desc,select外的列也可用于排序order by
+limit	可以限制展示行数 offset偏移量，limit 6,3 跳过前六项，从第七项开始展示
+--------------------------------------------------------------------------------------------------------------------------------------------
+DAY02
+自连接	必须起别名
+多表连接	FROM XXX JOIN XXX ON XXX JOIN XXX ON XXX
+复合连接	设计模式--->扳手图标 何为复合主键？复合连接的条件是有多个字段组成
+外连接	保留右表或者左表，一般用LEFT JOIN 
+隐性连接	FROM Table 1,Table 2 WHERE 1.xxx=2.xxx;删除WHERE成为交叉连接
+多表外连	用左连接
+跨数据库	table前加前缀
+自外连接	查询员工id上级--->CEO有id但没有上级
+USING	可以简化字段名称相同的连接条件
+交叉连接	隐式和显式两种写法
+联合	可以合并返回结果，前提保证列数相等
+Select 'text' as xxx 可以直接创建新字段xxx并赋予字符串'text'
+--------------------------------------------------------------------------------------------------------------------------------------------
+DAY03
+扳手图标--->设计模式
+VARCHAR	variable character，相较CHAR可以节省空间
+NN		不允许空值
+AI		automatic increase
+两种插值INSERT	默认顺序(有顺序的值)、自选顺序(字段+值)
+插入多行		VALUES( ),( ),( ) 
+创建表复制	CREATE TABLE A AS SELECT XXXXXX FROM B JOIN C ON XXXX WHERE XXXX
+更新单行多行	UPDATE XXTABLE SET XXX=XXX,XXX=XXX WHERE XXX=1;
+UPDATE子查询	SELECT * FROM B WHERE XXX IN(SELECT XXX FROM A WHERE XXX>3000)
+DELETE 		同SELECT
+Aggregate Function	聚合函数
+SELECT	SUM(invoice_total) AS total_sales
+	SUM(payments_total) AS total_payments
+	(SUM(invoice_total)-SUM(payments_total)) AS what_we_expect
+	'FIRST HALF OF 2019' AS data_range
+FROM	invoices
+WHERE invoice_date BETEWWN'2019-01-01' AND '2019-06-30'
+UNION
+SELECT	SUM(invoice_total) AS total_sales
+	SUM(payments_total) AS total_payments
+	(SUM(invoice_total)-SUM(payments_total)) AS what_we_expect
+	'SECOND HALF OF 2019' AS data_range
+FROM	invoices
+WHERE invoice_date BETEWWN'2019-07-01' AND '2019-12-31'
+UNION
+SELECT	SUM(invoice_total) AS total_sales
+	SUM(payments_total) AS total_payments
+	(SUM(invoice_total)-SUM(payments_total)) AS what_we_expect
+	'Total' AS data_range
+FROM	invoices
+WHERE invoice_date BETEWWN'2019-01-01' AND '2019-12-31'

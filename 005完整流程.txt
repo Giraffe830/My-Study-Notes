@@ -1,0 +1,38 @@
+npm run dev输入后，由于package内写了dev就是vite，所以相当于叫npm运行vite，而vite是script写的，所以必须运行在node上，继而先启动node服务器，vite随后运行监听5173接口。
+浏览器输入这个网址，浏览器向node服务器访问，vite代理直接返回indexhtml，由于浏览器只读得懂html，它就读indexhtml，发现里面的script的src写了mainjs，于是浏览器请求这个文件。
+经过vite代理，vite根据viteconfig的配置把mainjs内的所有路径补全，然后返回给浏览器。
+浏览器读到完整路径的mainjs，发现里面import了appvue，于是请求appvue，浏览器不管能不能读懂vue文件，无论如何得试一下，大不了读不懂再报错。
+浏览器一试请求appvue，又被vite代理了，即时编译：Vite 拦截 .vue 请求 -> 把 Template 编译成 Render 函数，把 CSS 编成 JS 注入字符串 -> 拼装成一个 JS 模块 返回。
+把 <template> 里的 HTML 变成了 JS 渲染函数。
+
+把 <style> 里的 SCSS 变成了标准 CSS。
+
+把 <script> 里的 TS 变成了标准 JS。
+
+递归加载：浏览器拿到 App.vue 的 JS，解析发现它还依赖 ElementPlus 和 Router -> 继续发请求去拿这些 JS -> 直到所有需要的 JS 都拿到了。
+appvue里面有导航栏，导航栏占据了左栏，右侧是导航栏带的容器。
+鼠标一点击各个模块链接，匹配路由，浏览器就
+1、懒加载（Lazy Load）向node服务器发送对应路由的请求，重复之前的vite代理返回JS给浏览器。
+2、静态导入（Static Import）点击导航栏，URL 变了。Router 发现你需要 Map.vue。浏览器直接从内存里掏出了早就准备好的 Map 代码。Vue 渲染。
+网络（Network）面板里静悄悄的，没有任何请求发给 Node 服务器。
+-------------------------------------------------------------------------------------------------------------
+这就是为什么不管怎么切换，导航栏都在的原因，即最外面的一层一直是appvue，容器里面套娃的是其他vue文件。
+Vite 服务器只是把 App.vue、Map.vue编译成 JS 文件（import App from './App.vue'、import Home from '../views/Home.vue'此时编译），发给浏览器。
+
+组装过程发生在你的浏览器里。
+
+是浏览器执行了 main.js 里的 createApp，启动了 Vue。
+
+Vue 发现 App.vue 里有个 <router-view>，又发现当前网址是 /map。
+
+Vue (在浏览器里) 决定把 Map.vue 的组件挂载到 App.vue 的坑位里。
+
+最后终于读到了mainjs里的挂载mount，于是vue把前面所有的东西渲染到id为app的div中。
+----------------------------------------------------------------------------------------------------------------
+浏览器只能读懂 HTML/JS/CSS。
+
+你的代码是 Vue/TS。
+
+Vite (配合 vite.config.js 里的插件) 在中间充当了翻译官。
+
+它把你的 Vue 代码“翻译”并“伪装”成了 JavaScript，骗过浏览器，让浏览器以为自己在执行普通的 JS，从而渲染出你想要的界面。

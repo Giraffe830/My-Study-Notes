@@ -1,0 +1,27 @@
+一、package.json记录了项目的name、version、dependencies依赖。定义了script:比如npm run dev
+代码npm run dev 含义是叫npm运行dev，在package文件中又定义了vite就是dev。
+最后结果是叫npm运行了vite，而vite只有在node上能运行，继而先启动node再在node上启动vite
+
+二、vite.config.js是vite的配置文件。将代码打包成浏览器能看懂的样子。配置的proxy代理、alias路径别名都在此
+
+三、index.html是浏览器加载的第一个文件。内置的<div id="app"></div>渲染所有vue界面内容
+
+四、node_modules (文件夹) 运行npm install后，里面存放根据package.json下载的所有零件。上传项目时一定要删掉，其他人可以根据package.json自己下载
+
+五、public这里的资源不会被代码压缩，原封不动搬到服务器上
+
+六、src/main.js 是vue的启动文件
+
+七、src/App.vue是所有页面的“父组件”，里面只有一个 <router-view />，意思就是：“这里是个画框，根据网址不同，在这个框里展示不同的画（Home, Map, About）。”
+
+八、src/router/ (文件夹)内含路由配置文件（通常叫 index.js）
+
+九、src/assets/ (文件夹)存放代码里需要 import 的静态资源，比如 logo 图片、全局的 CSS 样式文件。它和 public 的区别是，这里的图片会被 Vite 压缩处理
+
+只看：node_modules（别动它）。
+
+常改：src/views/（你的业务逻辑都在这）和 server/server.js（后端逻辑）。
+
+偶尔改：vite.config.js（配置代理）和 router/index.js（加新页面）。
+
+发送给别人时：保留除了 node_modules 以外的所有东西，切记带上 .sql 文件。
